@@ -1,16 +1,39 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export', // Enable static export
   i18n: {
     locales: ['ar', 'en'],
     defaultLocale: 'ar',
   },
   images: {
-    unoptimized: true, // Required for static export
     domains: ['images.unsplash.com', 'via.placeholder.com'],
   },
-  // Security headers - removed for static export (not supported)
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
